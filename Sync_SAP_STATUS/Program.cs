@@ -38,6 +38,8 @@ namespace Sync_SAP_STATUS
                     var sapRespone = JsonConvert.DeserializeObject<DataModel>(CallAPI(memo.DocumentNo));
                     if (sapRespone != null && sapRespone.E_DATA.Any())
                     {
+                        Console.WriteLine($"SAP COUNT : {sapRespone.E_DATA.Count()}");
+
                         var cols = GetColumnInTable(memo.MAdvancveForm, "Purchase Requisition Table");
 
                         var selectCol = cols
@@ -53,7 +55,6 @@ namespace Sync_SAP_STATUS
 
                             foreach (var data in sapRespone.E_DATA)
                             {
-                                Console.WriteLine($"SAP COUNT : {sapRespone.E_DATA.Count()}");
                                 var rowSelector = rows.Select((s, i) => new { index = i, s }).Where(x => x.s.Any(a => a.value == data.PO_NUMBER) && x.s.Any(a => a.value == data.PO_ITEM)).FirstOrDefault();
 
                                 if (rowSelector != null)
