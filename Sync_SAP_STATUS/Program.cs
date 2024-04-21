@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
+using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
 using System.Threading;
@@ -16,11 +17,20 @@ namespace Sync_SAP_STATUS
         {
             try
             {
+                Console.ForegroundColor = ConsoleColor.Green;
                 var db = new SingDataContext(_Con);
 
                 var templateId = db.MSTTemplates.FirstOrDefault(x => x.DocumentCode == _DocumentCode)?.TemplateId;
-
-                var memos = db.TRNMemos.Where(x => x.TemplateId == templateId && x.StatusName == "Completed").ToList();
+                var memoId = ConfigurationSettings.AppSettings["SrcMemoId"];
+                var memos = new List<TRNMemo>();
+                if (!string.IsNullOrEmpty(memoId))
+                {
+                    memos = db.TRNMemos.Where(x => x.MemoId.ToString() == memoId).ToList();
+                }
+                else
+                {
+                    memos = db.TRNMemos.Where(x => x.TemplateId == templateId && x.StatusName == "Completed").ToList();
+                }
 
                 foreach (var memo in memos)
                 {
@@ -41,15 +51,18 @@ namespace Sync_SAP_STATUS
                         {
                             var rows = dataTable.row;
 
-                            //dataTable.row[0][49].value = "TEST";
                             foreach (var data in sapRespone.E_DATA)
                             {
-                                var rowSelector = rows.Select((s, i) => new { index = i, s }).Where(x => x.s.Any(a => a.value == data.PO_NUMBER && a.value == data.PO_ITEM)).FirstOrDefault();
+                                Console.WriteLine($"SAP COUNT : {sapRespone.E_DATA.Count()}");
+                                var rowSelector = rows.Select((s, i) => new { index = i, s }).Where(x => x.s.Any(a => a.value == data.PO_NUMBER) && x.s.Any(a => a.value == data.PO_ITEM)).FirstOrDefault();
 
                                 if (rowSelector != null)
                                 {
+                                    Console.WriteLine($"RowSelector PO_NUMBER : {data.PO_NUMBER} PO_ITEM : {data.PO_ITEM}");
                                     rowSelector.s[selectCol.FirstOrDefault(x => x.label == "PO Status SAP").Index].value = data.PO_STATUS;
                                     dataTable.row[rowSelector.index] = rowSelector.s;
+                                    Console.WriteLine($"REPLACE DATA : PROCESS");
+                                    Console.WriteLine($"SAVE DATA!");
                                 }
                             }
 
