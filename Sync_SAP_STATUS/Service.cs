@@ -1,8 +1,13 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
+using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace Sync_SAP_STATUS
 {
@@ -12,64 +17,15 @@ namespace Sync_SAP_STATUS
         {
             public EData[] E_DATA { get; set; }
             public object[] E_HISDATA { get; set; }
-            public EReturn[] E_RETURN { get; set; }
         }
 
         public class EData
         {
             public string WOLF_NO { get; set; }
             public string WOLF_ITEM { get; set; }
-            public string DOC_TYPE { get; set; }
-            public string PURCH_ORG { get; set; }
-            public string PUR_GROUP { get; set; }
-            public string COMP_CODE { get; set; }
-            public string CURRENCY { get; set; }
-            public string VENDOR { get; set; }
-            public double EXCH_RATE { get; set; }
-            public DateTime DOC_DATE { get; set; }
-            public DateTime VPER_START { get; set; }
-            public DateTime VPER_END { get; set; }
-            public string REF_1 { get; set; }
-            public string OUR_REF { get; set; }
-            public string COLLECT_NO { get; set; }
             public string PO_NUMBER { get; set; }
             public string PO_ITEM { get; set; }
-            public string DEL_FLAG { get; set; }
-            public string SHORT_TEXT { get; set; }
-            public string MATERIAL { get; set; }
-            public string PLANT { get; set; }
-            public string MATL_GROUP { get; set; }
-            public double QUANTITY { get; set; }
-            public string PO_UNIT { get; set; }
-            public double NET_PRICE { get; set; }
-            public double AMOUNT { get; set; }
-            public string TAX_CODE { get; set; }
-            public string NO_MORE_GR { get; set; }
-            public string ACCTASSCAT { get; set; }
-            public string GL_ACCOUNT { get; set; }
-            public string BUS_AREA { get; set; }
-            public string COSTCENTER { get; set; }
-            public string ASSET_NO { get; set; }
-            public string SUB_NUMBER { get; set; }
-            public string ORDERID { get; set; }
-            public string GR_RCPT { get; set; }
-            public string UNLOAD_PT { get; set; }
-            public string WBS_ELEMENT { get; set; }
-            public string OPEN_RELEASE { get; set; }
             public string PO_STATUS { get; set; }
-            public string OPEN_ITEM { get; set; }
-            public double QTY_GR { get; set; }
-            public double QTY_OPEN { get; set; }
-            public string RPA_STATUS { get; set; }
-            public string RPA_CHANGE { get; set; }
-            public string HEADER_TEXT { get; set; }
-            public string INSTALLMENT_TEXT { get; set; }
-            public string DELIVERY_TEXT { get; set; }
-            public string HEADER_NOTE_TEXT { get; set; }
-            public string PROC_METHOD_TEXT { get; set; }
-            public string SAVING_TEXT { get; set; }
-            public string REMARK_TEXT { get; set; }
-            public string ITEM_TEXT { get; set; }
         }
 
         public class EReturn
@@ -90,19 +46,155 @@ namespace Sync_SAP_STATUS
             public string SYSTEM { get; set; }
         }
 
-        public class PurchaseModel
-        {
-            public Row[] Row { get; set; }
-        }
-
-        public class Row
-        {
-            public Value[] Value { get; set; }
-        }
+        public static string _Json = @"{  ""row"": [    [      {        ""value"": ""7600 สำนักงานใหญ่ (S-HO)""      },      {        ""value"": ""7600""      },      {        ""value"": ""2024""      },      {        ""value"": ""7600614000 IT""      },      {        ""value"": ""7600614000""      },      {        ""value"": ""HOF Head Office""      },      {        ""value"": "" N/A""      },      {        ""value"": """"      },      {        ""value"": ""A.76.20.7600614000 IT""      },      {        ""value"": ""A.76.20.7600614000""      },      {        ""value"": ""วิธีตกลงราคา (Price Agreement)""      },      {        ""value"": null      },      {        ""value"": ""-""      },      {        ""value"": ""2.00""      },      {        ""value"": ""100.00""      },      {        ""value"": ""200.00""      },      {        ""value"": ""18 Apr 2024""      },      {        ""value"": ""THB""      },      {        ""value"": ""1.00000""      },      {        ""value"": ""200.00""      },      {        ""value"": ""V7 Purchase tax rate 7%""      },      {        ""value"": ""7.00""      },      {        ""value"": ""14.00""      },      {        ""value"": ""214.00""      },      {        ""value"": ""23988537""      },      {        ""value"": ""23988323""      },      {        ""value"": ""WITHIN""      },      {        ""value"": null      },      {        ""value"": ""1000025 บริษัท เอลเม็ค วิศวกรรม จำกัด""      },      {        ""value"": ""ITHW05 อุปกรณ์ต่อพ่วง""      },      {        ""value"": ""1000000014 ปลั๊กไฟ 3 ตา""      },      {        ""value"": ""EA each""      },      {        ""value"": null      },      {        ""value"": null      },      {        ""value"": null      },      {        ""value"": ""F Order""      },      {        ""value"": """"      },      {        ""value"": ""101 จัดซื้อกลาง""      },      {        ""value"": ""7600 จัดซื้อกลาง""      },      {        ""value"": null      },      {        ""value"": null      },      {        ""value"": null      },      {        ""value"": null      },      {        ""value"": null      },      {        ""value"": null      },      {        ""value"": null      },      {        ""value"": ""2024-04-20""      },      {        ""value"": ""4010000719""      },      {        ""value"": ""00010""      },      {        ""value"": null      }    ]  ]}
+";
 
         public class Value
         {
             public string value { get; set; }
+        }
+
+        public class RootObject
+        {
+            public List<List<Value>> row { get; set; }
+        }
+
+        public class Column
+        {
+            public string label { get; set; }
+        }
+        public class I_DATA
+        {
+            public string WOLF_NO_FROM { get; set; }
+            public string WOLF_NO_TO { get; set; }
+            public string PO_NUMBER_FROM { get; set; }
+            public string PO_NUMBER_TO { get; set; }
+            public string PO_DATE_FROM { get; set; }
+            public string PO_DATE_TO { get; set; }
+            public string RPA_STATUS { get; set; }
+            public bool? RPA_UPDATE_FLAG { get; set; }
+        }
+
+        public static string CallAPI(string requset)
+        {
+            string respones = null;
+            try
+            {
+                HttpClient client = new HttpClient();
+                client.Timeout = TimeSpan.FromMinutes(30);
+                var body = new
+                {
+                    I_DATA = new I_DATA
+                    {
+                        WOLF_NO_FROM = requset,
+                    }
+                };
+
+                var apiPath = ConfigurationSettings.AppSettings["APIPath"];
+                var module = ConfigurationSettings.AppSettings["Module"];
+                var sap_client = ConfigurationSettings.AppSettings["sap-client"];
+
+                client.DefaultRequestHeaders.Add("Authorization", ConfigurationSettings.AppSettings["Token"]);
+                var content = new StringContent(JsonConvert.SerializeObject(body), Encoding.UTF8, "application/json");
+                var respone = client.PostAsync($"{apiPath}/e-expense/{module}?sap-client={sap_client}&format=json&sap-language=TH", content);
+                respone.Wait();
+                var result = respone.Result;
+                var massage = result.Content.ReadAsStringAsync().Result;
+                respones = massage;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+            }
+            return respones;
+        }
+
+        public static List<Column> GetColumnInTable(string advanceForm, string label)
+        {
+            //string setValue = "";
+            JObject jsonAdvanceForm = JObject.Parse(advanceForm);
+            if (jsonAdvanceForm.ContainsKey("items"))
+            {
+                JArray itemsArray = (JArray)jsonAdvanceForm["items"];
+                foreach (JObject jItems in itemsArray)
+                {
+                    JArray jLayoutArray = (JArray)jItems["layout"];
+                    foreach (JToken jLayout in jLayoutArray)
+                    {
+                        JObject jTemplate = (JObject)jLayout["template"];
+                        var getLabel = (String)jTemplate["label"];
+                        if (label == getLabel)
+                        {
+                            JObject attribute = (JObject)jTemplate["attribute"];
+                            return JsonConvert.DeserializeObject<List<Column>>(attribute["column"].ToString());
+                        }
+                    }
+                }
+            }
+
+            return new List<Column>();
+        }
+
+        public static string getValueAdvanceForm(string AdvanceForm, string label)
+        {
+            string setValue = "";
+            JObject jsonAdvanceForm = JObject.Parse(AdvanceForm);
+            if (jsonAdvanceForm.ContainsKey("items"))
+            {
+                JArray itemsArray = (JArray)jsonAdvanceForm["items"];
+                foreach (JObject jItems in itemsArray)
+                {
+                    JArray jLayoutArray = (JArray)jItems["layout"];
+                    foreach (JToken jLayout in jLayoutArray)
+                    {
+                        JObject jTemplate = (JObject)jLayout["template"];
+                        var getLabel = (String)jTemplate["label"];
+                        if (label == getLabel)
+                        {
+                            return jLayout["data"].ToString();
+                            //if (jdata != null)
+                            //{
+                            //    if (jdata["value"] != null) setValue = jdata["value"].ToString();
+                            //}
+                            //break;
+                        }
+                    }
+                }
+            }
+
+            return setValue;
+        }
+
+        public static string ReplaceDataProcess(string DestAdvanceForm, JObject Value, string label)
+        {
+            JObject jsonAdvanceForm = JObject.Parse(DestAdvanceForm);
+            JArray itemsArray = (JArray)jsonAdvanceForm["items"];
+            foreach (JObject jItems in itemsArray)
+            {
+                JArray jLayoutArray = (JArray)jItems["layout"];
+
+                if (jLayoutArray.Count >= 1)
+                {
+                    JObject jTemplateL = (JObject)jLayoutArray[0]["template"];
+
+                    if ((String)jTemplateL["label"] == label)
+                    {
+                        jLayoutArray[0]["data"] = Value;
+                    }
+
+                    if (jLayoutArray.Count > 1)
+                    {
+                        JObject jTemplateR = (JObject)jLayoutArray[1]["template"];
+
+                        if ((String)jTemplateR["label"] == label)
+                        {
+
+                            jLayoutArray[1]["data"] = Value;
+                        }
+                    }
+                }
+            }
+            return JsonConvert.SerializeObject(jsonAdvanceForm);
         }
     }
 }

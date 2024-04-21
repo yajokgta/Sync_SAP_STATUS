@@ -1,0 +1,18 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ordesignerObjectsDiagram dslVersion="1.0.0.0" absoluteBounds="0, 0, 11, 21.125" name="Sing">
+  <DataContextMoniker Name="/SingDataContext" />
+  <nestedChildShapes>
+    <classShape Id="168c8a45-4d0b-4cf3-933c-258d930c0ca3" absoluteBounds="6.25, 6.25, 2, 14.6550927734375">
+      <DataClassMoniker Name="/SingDataContext/TRNMemo" />
+      <nestedChildShapes>
+        <elementListCompartment Id="c1ea2992-e5aa-40a8-bc95-7d569b2cda5c" absoluteBounds="6.265, 6.71, 1.9700000000000002, 14.0950927734375" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="0591d4b3-09a9-44bd-9090-12f046ea73bc" absoluteBounds="5, 5.625, 2, 8.3091455078125">
+      <DataClassMoniker Name="/SingDataContext/MSTTemplate" />
+      <nestedChildShapes>
+        <elementListCompartment Id="a6ad77a0-92a3-4131-bf13-947067271bab" absoluteBounds="5.015, 6.085, 1.9700000000000002, 7.7491455078125009" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+  </nestedChildShapes>
+</ordesignerObjectsDiagram>
