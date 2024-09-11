@@ -12,7 +12,14 @@ namespace Sync_SAP_STATUS
     internal class Program
     {
         public static string _Con = ConfigurationSettings.AppSettings["ConnectionString"];
-        public static string _DocumentCode = ConfigurationSettings.AppSettings["DocumentCode"];
+        public static List<string> _DocumentCode
+        {
+            get
+            {
+                var docs = ConfigurationSettings.AppSettings["DocumentCode"];
+                return docs.Split('|').ToList();
+            }
+        }
         static void Main(string[] args)
         {
             try
@@ -20,7 +27,7 @@ namespace Sync_SAP_STATUS
                 Console.ForegroundColor = ConsoleColor.Green;
                 var db = new SingDataContext(_Con);
 
-                var templateId = db.MSTTemplates.FirstOrDefault(x => x.DocumentCode == _DocumentCode)?.TemplateId;
+                var templateId = db.MSTTemplates.Where(x => _DocumentCode.Contains(x.DocumentCode)).Select(s => s.TemplateId).ToList();
                 var memoId = ConfigurationSettings.AppSettings["SrcMemoId"];
                 var memos = new List<TRNMemo>();
                 if (!string.IsNullOrEmpty(memoId))
@@ -29,7 +36,7 @@ namespace Sync_SAP_STATUS
                 }
                 else
                 {
-                    memos = db.TRNMemos.Where(x => x.TemplateId == templateId && x.StatusName == "Completed").ToList();
+                    memos = db.TRNMemos.Where(x => templateId.Contains(x.TemplateId) && x.StatusName == "Completed").ToList();
                 }
 
                 foreach (var memo in memos)
