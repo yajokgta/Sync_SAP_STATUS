@@ -36,7 +36,7 @@ namespace Sync_SAP_STATUS
                 }
                 else
                 {
-                    memos = db.TRNMemos.Where(x => templateId.Contains(x.TemplateId) && x.StatusName == "Completed").ToList();
+                    memos = db.TRNMemos.Where(x => templateId.Contains(x.TemplateId ?? 0) && x.StatusName == "Completed").ToList();
                 }
 
                 foreach (var memo in memos)
